@@ -16,4 +16,3 @@ Data
 ```
 http://www.econ.yale.edu/~shiller/data.htm
 ```
->>>>>>> Initial Revision
