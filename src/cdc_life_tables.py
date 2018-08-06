@@ -14,11 +14,15 @@ Many states have Black, Male Black, and Female Black.
 """
 
 import os
-import certifi
+import ssl
 import pandas as pd
 
 from glob import glob
-from urllib.request import urlopen
+
+try:
+    import urllib2  # python2
+except:
+    import urllib.request as urllib2  # python3
 
 
 states_table = """ALABAMA AL
@@ -98,10 +102,10 @@ groups = ['total', 'male', 'female',
           'black', 'bm', 'bf', ]
 
 cdc_url = 'http://ftp.cdc.gov/pub/Health_Statistics/NCHS/Publications/NVSR/60_09/'
-lt_dir = './data/cdc'
+lt_dir = '/data/cdc/'
 
 try:
-    lt_dir = os.path.join(os.path.dirname(__file__), lt_dir)
+    lt_dir = os.getcwd() + lt_dir
 except NameError:
     pass
 
@@ -119,7 +123,7 @@ if n_life_table_csv_files != 426:
     for state in two_letter_abbrev:
         s = state.lower().replace(' ', '_')
         state_url = cdc_url + 'lewk4_{}.xlsx'.format(s)
-        url = urlopen(state_url)
+        url = urllib2.urlopen(state_url, context=ssl._create_unverified_context())
 
         xls = pd.ExcelFile(url)
         sheets = xls.sheet_names

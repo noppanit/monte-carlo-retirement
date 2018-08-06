@@ -1,13 +1,16 @@
 import os
 import pandas as pd
 
+try:
+    import urllib2  # python2
+except:
+    import urllib.request as urllib2  # python3
 
-from urllib.request import urlopen
+csv_file = os.getcwd() + '/data/shiller.csv'
 
-csv_file = './data/shiller.csv'
 if not os.path.exists(csv_file):
     xls_url = 'http://www.econ.yale.edu/~shiller/data/chapt26.xlsx'
-    url = urlopen(xls_url)
+    url = urllib2.urlopen(xls_url)
 
     xls = pd.ExcelFile(url)
     df = xls.parse('Data', skiprows=[0, 1, 3, 4, 5, 6, 7],
@@ -18,11 +21,11 @@ if not os.path.exists(csv_file):
 else:
     df = pd.read_csv(csv_file, index_col=0)
 
-cpi = df['CPI'] # Consumer Price Index
+cpi = df['CPI']  # Consumer Price Index
 gs10 = df['RLONG'] / 100.  # convert from percent to fraction, Long Government Bond Yield
 
-stock_price = df['P'] # S&P Composite Price Index
-stock_div = df['D'] # Divided accuring to index
+stock_price = df['P']  # S&P Composite Price Index
+stock_div = df['D']  # Divided accuring to index
 
 
 ## Computing annualized changes

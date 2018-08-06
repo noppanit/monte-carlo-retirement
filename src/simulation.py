@@ -1,10 +1,7 @@
 import numpy as np
 
-import uncertainties as unc
-import uncertainties.unumpy as unp
-import random
-
 from src.shiller import *
+from src.cdc_life_tables import *
 
 
 def run_histories(starting_assets,
@@ -15,7 +12,7 @@ def run_histories(starting_assets,
                   demographic_group,
                   n_mc=1000):
     # Life table
-    #     table = life_table(state_abbrev, demographic_group)
+    table = life_table(state_abbrev, demographic_group)
 
     mc_histories = []
     rand = np.random.random_sample
@@ -32,7 +29,7 @@ def run_histories(starting_assets,
         while current_assets > 0:
 
             # Death this year.
-            if age >= 110:  # or rand() == 0: #table[int(age)]:
+            if age >= 110 or rand() <= table[int(age)]:
                 # Die at random point in year
                 current_assets -= expenses_per_year * rand()
                 break
@@ -67,3 +64,8 @@ def run_histories(starting_assets,
         mc_histories.append((assets))
 
     return mc_histories
+
+
+if __name__ == '__main__':
+    run_histories(yearly_expense=50000.00, starting_assets=500000.00, stock_fraction=0.5,
+                  starting_age=65, state_abbrev='IA', demographic_group='white female', n_mc=100)
